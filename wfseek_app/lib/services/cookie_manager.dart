@@ -137,10 +137,9 @@ class _VisibleHarvestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        onDone();
-        return true;
+    return PopScope(
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) onDone();
       },
       child: Scaffold(
         appBar: AppBar(

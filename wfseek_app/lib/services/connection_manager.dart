@@ -34,11 +34,9 @@ class ConnectionManager {
 
     if (!_registered) {
       _registered = true;
-      _ref.onDisconnect().runTransaction((current) {
-        final n = current is int ? current : 0;
-        final next = n - 1;
-        return Transaction.success(next < 0 ? 0 : next);
-      });
+      // OnDisconnect does not support runTransaction; use ServerValue.increment
+      // to atomically decrement when the client disconnects.
+      unawaited(_ref.onDisconnect().set(ServerValue.increment(-1)));
     }
 
     return finalCount <= 100 ? ConnectionMode.websocket : ConnectionMode.polling;
@@ -52,3 +50,6 @@ class ConnectionManager {
     });
   }
 }
+
+// Discard a future without linting warnings.
+void unawaited(Future<void> f) {}

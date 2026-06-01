@@ -21,7 +21,7 @@ class ScanCoordinator {
     final now = DateTime.now().millisecondsSinceEpoch;
     final txn = await stateRef.runTransaction((current) {
       Map<String, dynamic> m = current is Map
-          ? Map<String, dynamic>.from(current as Map)
+          ? Map<String, dynamic>.from(current)
           : {};
       final inProgress = m['scan_in_progress'] == true;
       final last = m['last_scan_utc'];

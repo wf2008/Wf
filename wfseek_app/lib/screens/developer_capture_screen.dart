@@ -21,30 +21,31 @@ class _DeveloperCaptureScreenState extends State<DeveloperCaptureScreen> {
     if (_url.text.isEmpty) return;
     setState(() => _capturing = true);
 
-    final controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel(
-        'CaptureChannel',
-        onMessageReceived: (msg) {
-          try {
-            final entry = jsonDecode(msg.message) as Map<String, dynamic>;
-            setState(() => _captures.add(entry));
-          } catch (_) {}
-        },
-      )
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (_) async {
-          try {
-            await _runJs(controller, captureJS);
-          } catch (_) {}
-        },
-        onPageFinished: (_) async {
-          try {
-            await _runJs(controller, captureJS);
-          } catch (_) {}
-        },
-      ))
-      ..loadRequest(Uri.parse(_url.text));
+    // Declare first so the NavigationDelegate callbacks can capture it.
+    final controller = WebViewController();
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller.addJavaScriptChannel(
+      'CaptureChannel',
+      onMessageReceived: (msg) {
+        try {
+          final entry = jsonDecode(msg.message) as Map<String, dynamic>;
+          setState(() => _captures.add(entry));
+        } catch (_) {}
+      },
+    );
+    controller.setNavigationDelegate(NavigationDelegate(
+      onPageStarted: (_) async {
+        try {
+          await _runJs(controller, captureJS);
+        } catch (_) {}
+      },
+      onPageFinished: (_) async {
+        try {
+          await _runJs(controller, captureJS);
+        } catch (_) {}
+      },
+    ));
+    controller.loadRequest(Uri.parse(_url.text));
 
     await Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => Scaffold(
