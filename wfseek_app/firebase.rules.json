@@ -1,0 +1,28 @@
+{
+  "rules": {
+    "opportunities": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "scan_state": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "users": {
+      "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid"
+      }
+    },
+    "activation_codes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": false
+      }
+    },
+    "connected_clients": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

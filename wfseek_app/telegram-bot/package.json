@@ -1,0 +1,11 @@
+{
+  "name": "wfseek-telegram-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wfseek Telegram bot for generating activation codes (Vercel serverless).",
+  "dependencies": {
+    "telegraf": "^4.15.6",
+    "firebase-admin": "^12.0.0",
+    "dotenv": "^16.4.0"
+  }
+}

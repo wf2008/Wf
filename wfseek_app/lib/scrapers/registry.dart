@@ -1,0 +1,65 @@
+import 'scraper_base.dart';
+import 'bet9ja.dart';
+import 'sportybet.dart';
+import 'bangbet.dart';
+import 'msport.dart';
+import 'maxbet.dart';
+import 'betpawa.dart';
+import 'nairabet.dart';
+import 'merrybet.dart';
+import 'accessbet.dart';
+import 'winnerbet.dart';
+import 'betking.dart';
+import 'betway.dart';
+import 'betano.dart';
+import 'betwinner.dart';
+import '22bet.dart';
+import '1xbet.dart';
+import 'bet365.dart';
+import 'livescorebet.dart';
+import 'pinnacle.dart';
+import 'cloudbet.dart';
+import 'bcgame.dart';
+import 'stake.dart';
+import 'parimatch.dart';
+import 'betbonanza.dart';
+import 'betlion.dart';
+import 'supabet.dart';
+import 'elitebet.dart';
+import 'supabets.dart';
+import 'betplus.dart';
+import 'naijabet.dart';
+
+/// Returns a fresh map of bookmaker id → scraper instance.
+Map<String, ScraperBase> buildAllScrapers() => {
+      'bet9ja': Bet9jaScraper(),
+      'sportybet': SportyBetScraper(),
+      'bangbet': BangBetScraper(),
+      'msport': MSportScraper(),
+      'maxbet': MaxBetScraper(),
+      'betpawa': BetPawaScraper(),
+      'nairabet': NairaBetScraper(),
+      'merrybet': MerryBetScraper(),
+      'accessbet': AccessBetScraper(),
+      'winnerbet': WinnerBetScraper(),
+      'betking': BetKingScraper(),
+      'betway': BetwayScraper(),
+      'betano': BetanoScraper(),
+      'betwinner': BetWinnerScraper(),
+      '22bet': TwentyTwoBetScraper(),
+      '1xbet': OneXBetScraper(),
+      'bet365': Bet365Scraper(),
+      'livescorebet': LiveScoreBetScraper(),
+      'pinnacle': PinnacleScraper(),
+      'cloudbet': CloudbetScraper(),
+      'bcgame': BCGameScraper(),
+      'stake': StakeScraper(),
+      'parimatch': ParimatchScraper(),
+      'betbonanza': BetBonanzaScraper(),
+      'betlion': BetLionScraper(),
+      'supabet': SupabetScraper(),
+      'elitebet': EliteBetScraper(),
+      'supabets': SupabetsScraper(),
+      'betplus': BetPlusScraper(),
+      'naijabet': NaijaBetScraper(),
+    };

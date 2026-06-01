@@ -1,0 +1,38 @@
+name: wfseek_app
+description: Distributed arbitrage scanning network for Nigerian bookmakers.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: '>=3.10.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
+  firebase_database: ^10.4.0
+  webview_flutter: ^4.4.2
+  flutter_secure_storage: ^9.0.0
+  workmanager: ^0.5.2
+  tflite_flutter: ^0.10.4
+  path_provider: ^2.1.1
+  dio: ^5.4.0
+  connectivity_plus: ^5.0.2
+  flutter_local_notifications: ^16.3.0
+  intl: ^0.18.1
+  share_plus: ^7.2.1
+  url_launcher: ^6.2.2
+  android_intent_plus: ^4.0.3
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/model.tflite
