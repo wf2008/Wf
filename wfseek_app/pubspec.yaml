@@ -20,7 +20,7 @@ dependencies:
   path_provider: ^2.1.1
   dio: ^5.4.0
   connectivity_plus: ^5.0.2
-  flutter_local_notifications: ^16.3.0
+  flutter_local_notifications: 17.2.1
   intl: ^0.18.1
   share_plus: ^7.2.1
   url_launcher: ^6.2.2
