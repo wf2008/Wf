@@ -16,7 +16,7 @@ dependencies:
   webview_flutter: ^4.4.2
   flutter_secure_storage: ^9.0.0
   workmanager: ^0.5.2
-  tflite_flutter: ^0.10.4
+  tflite_flutter: ^0.11.0
   path_provider: ^2.1.1
   dio: ^5.4.0
   connectivity_plus: ^5.0.2
