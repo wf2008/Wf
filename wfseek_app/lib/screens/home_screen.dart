@@ -305,24 +305,30 @@ class _PlanBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool paidActive = plan.plan == 'paid' && plan.isActive;
-    final bool paidExpired = plan.plan == 'paid' && !plan.isActive;
-    String text;
+    final bool active = plan.isPaid;
+    final bool expired = plan.plan != 'free' && !plan.isActive;
+
+    String title;
+    String? subtitle;
     Color color;
     Widget? trailing;
-    if (paidActive) {
-      text = 'Pro Plan – all opportunities';
+
+    if (active) {
+      title = '${plan.label} – all opportunities unlocked';
+      subtitle = plan.expiryText.isNotEmpty ? plan.expiryText : null;
       color = Colors.green.shade50;
-    } else if (paidExpired) {
-      text = 'Plan expired – Upgrade';
+    } else if (expired) {
+      title = '${plan.label} – expired';
+      subtitle = 'Renew to keep scanning';
       color = Colors.red.shade50;
       trailing = TextButton(
         onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const ActivationScreen())),
-        child: const Text('Upgrade'),
+        child: const Text('Renew'),
       );
     } else {
-      text = 'Free Tier – up to 2% profit';
+      title = 'Free Tier – up to 2% profit only';
+      subtitle = 'Upgrade to see all opportunities';
       color = Colors.amber.shade50;
       trailing = TextButton(
         onPressed: () => Navigator.of(context).push(
@@ -330,13 +336,26 @@ class _PlanBanner extends StatelessWidget {
         child: const Text('Upgrade'),
       );
     }
+
     return Container(
       width: double.infinity,
       color: color,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Expanded(child: Text(text)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
+                if (subtitle != null)
+                  Text(subtitle,
+                      style: const TextStyle(
+                          fontSize: 12, color: Colors.black54)),
+              ],
+            ),
+          ),
           if (trailing != null) trailing,
         ],
       ),
