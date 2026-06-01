@@ -21,24 +21,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
         with:
-          python-version: '3.10'
-
-      - name: Install Python deps
-        run: |
-          pip install --upgrade pip
-          pip install sentence-transformers tensorflow
-
-      - name: Generate TFLite model
-        run: python convert_model.py
+          ndk-version: r25b
+          add-to-path: false
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.32.0'
           channel: stable
+          cache: true
 
       - name: Flutter pub get
         run: flutter pub get
