@@ -17,7 +17,7 @@
     "activation_codes": {
       "$code": {
         ".read": "auth != null",
-        ".write": false
+        ".write": "auth != null"
       }
     },
     "connected_clients": {

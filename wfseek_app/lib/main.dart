@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workmanager/workmanager.dart';
@@ -13,7 +14,6 @@ import 'services/cookie_manager.dart';
 import 'scrapers/config.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'dart:io' show Platform;
-import 'package:flutter/services.dart';
 
 final FlutterLocalNotificationsPlugin flnp = FlutterLocalNotificationsPlugin();
 
@@ -24,31 +24,31 @@ void callbackDispatcher() {
       await Firebase.initializeApp();
       final coordinator = ScanCoordinator();
       await coordinator.attemptAutomaticScan();
-    } catch (e) {
-      // Swallow errors so the periodic task does not crash.
-    }
+    } catch (_) {}
     return Future.value(true);
   });
 }
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   await Firebase.initializeApp();
 
-  // Local notifications init
   const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
   const iosInit = DarwinInitializationSettings();
   const initSettings = InitializationSettings(android: androidInit, iOS: iosInit);
   await flnp.initialize(initSettings);
 
-  // Workmanager init
   await Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
   await Workmanager().registerPeriodicTask(
     'scanTaskId',
     'scanTask',
     frequency: const Duration(minutes: 15),
     constraints: Constraints(networkType: NetworkType.connected),
-    existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+    existingWorkPolicy: ExistingWorkPolicy.keep,
   );
 
   runApp(const WfseekApp());
@@ -62,11 +62,109 @@ class WfseekApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wfseek',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.indigo,
-      ),
+      theme: _buildTheme(),
       home: const _RootGate(),
+    );
+  }
+
+  ThemeData _buildTheme() {
+    const seed = Color(0xFF00897B);
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: seed,
+        primary: const Color(0xFF00897B),
+        secondary: const Color(0xFF43A047),
+        tertiary: const Color(0xFFF57F17),
+        surface: Colors.white,
+        background: const Color(0xFFF4F6F8),
+        error: const Color(0xFFD32F2F),
+      ),
+      scaffoldBackgroundColor: const Color(0xFFF4F6F8),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF00897B),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.5,
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Color(0xFF00897B),
+          statusBarIconBrightness: Brightness.light,
+        ),
+      ),
+      cardTheme: CardThemeData(
+        elevation: 3,
+        shadowColor: Colors.black12,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        color: Colors.white,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF00897B),
+          foregroundColor: Colors.white,
+          elevation: 2,
+          shadowColor: const Color(0xFF00897B).withOpacity(0.4),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: const Color(0xFF00897B),
+          side: const BorderSide(color: Color(0xFF00897B), width: 1.5),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: const Color(0xFF00897B),
+          textStyle: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF00897B), width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: TextStyle(color: Colors.grey.shade600),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: const Color(0xFFE0F2F1),
+        labelStyle: const TextStyle(color: Color(0xFF00897B), fontWeight: FontWeight.w600),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      dividerTheme: const DividerThemeData(thickness: 1, space: 1),
+      listTileTheme: const ListTileThemeData(
+        iconColor: Color(0xFF00897B),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: const Color(0xFF263238),
+        contentTextStyle: const TextStyle(color: Colors.white),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 }
@@ -80,21 +178,49 @@ class _RootGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (ctx, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const _SplashScreen();
         }
-        if (snap.data == null) {
-          return const LoginScreen();
-        }
+        if (snap.data == null) return const LoginScreen();
         return const _PostLoginGate();
       },
     );
   }
 }
 
-/// After login, enforces:
-///  1) Battery optimization exemption (Android) / Background refresh (iOS)
-///  2) Plan activation check
-///  3) Mandatory cookie verification for protected bookmakers
+class _SplashScreen extends StatelessWidget {
+  const _SplashScreen();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF00897B),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Icon(Icons.trending_up, size: 48, color: Colors.white),
+            ),
+            const SizedBox(height: 20),
+            const Text('Wfseek',
+                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 8),
+            Text('Arbitrage Scanner',
+                style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14)),
+            const SizedBox(height: 40),
+            const CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _PostLoginGate extends StatefulWidget {
   const _PostLoginGate();
   @override
@@ -121,9 +247,7 @@ class _PostLoginGateState extends State<_PostLoginGate> with WidgetsBindingObser
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _checkBattery();
-    }
+    if (state == AppLifecycleState.resumed) _checkBattery();
   }
 
   Future<void> _checkBattery() async {
@@ -137,62 +261,68 @@ class _PostLoginGateState extends State<_PostLoginGate> with WidgetsBindingObser
         final res = await _platform.invokeMethod<bool>('isBackgroundRefreshEnabled');
         ok = res ?? true;
       }
-    } on PlatformException {
-      // If platform channel not yet wired in, treat as OK so dev builds still work.
-      ok = true;
-    } on MissingPluginException {
+    } catch (_) {
       ok = true;
     }
     if (!mounted) return;
-    setState(() {
-      _batteryOk = ok;
-      _checking = false;
-    });
+    setState(() { _batteryOk = ok; _checking = false; });
   }
 
   Future<void> _openBatterySettings() async {
     if (Platform.isAndroid) {
-      const intent = AndroidIntent(
-        action: 'android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS',
-      );
+      const intent = AndroidIntent(action: 'android.settings.IGNORE_BATTERY_OPTIMIZATION_SETTINGS');
       await intent.launch();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_checking) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    if (_checking) return const _SplashScreen();
     if (!_batteryOk) {
       return Scaffold(
+        backgroundColor: const Color(0xFF00897B),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(32),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.battery_alert, size: 80, color: Colors.red),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: const Icon(Icons.battery_alert, size: 72, color: Colors.white),
+                ),
+                const SizedBox(height: 32),
+                const Text('Background Access Required',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                    textAlign: TextAlign.center),
                 const SizedBox(height: 16),
-                const Text(
-                  'Battery optimization required',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                Text(
+                  'Wfseek needs to run in the background to continuously scan for arbitrage opportunities.',
+                  style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 15, height: 1.5),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Wfseek needs to run in the background to scan opportunities. Please disable battery optimization.',
-                  textAlign: TextAlign.center,
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: const Color(0xFF00897B),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    ),
+                    onPressed: _openBatterySettings,
+                    child: const Text('Disable Battery Optimization', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  ),
                 ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: _openBatterySettings,
-                  child: const Text('Open Settings'),
-                ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 TextButton(
                   onPressed: _checkBattery,
-                  child: const Text('I have disabled it – Re-check'),
+                  child: Text('Done — Re-check', style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 15)),
                 ),
               ],
             ),
@@ -206,20 +336,13 @@ class _PostLoginGateState extends State<_PostLoginGate> with WidgetsBindingObser
 
 class _PlanGate extends StatelessWidget {
   const _PlanGate();
-
   @override
   Widget build(BuildContext context) {
-    final auth = AuthService();
     return StreamBuilder<PlanStatus>(
-      stream: auth.planStatusStream(),
+      stream: AuthService().planStatusStream(),
       builder: (ctx, snap) {
-        if (!snap.hasData) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        }
-        final plan = snap.data!;
-        if (!plan.isActive) {
-          return const ActivationScreen();
-        }
+        if (!snap.hasData) return const _SplashScreen();
+        if (!snap.data!.isActive) return const ActivationScreen();
         return const _CookieGate();
       },
     );
@@ -246,28 +369,17 @@ class _CookieGateState extends State<_CookieGate> {
     final cm = CookieManager();
     bool allOk = true;
     for (final bm in bookmakers.where((b) => b.protected)) {
-      final hasCookies = await cm.hasCookiesForDomain(bm.domain);
-      if (!hasCookies) {
-        allOk = false;
-        break;
-      }
+      if (!await cm.hasCookiesForDomain(bm.domain)) { allOk = false; break; }
     }
     if (!mounted) return;
-    setState(() {
-      _allVerified = allOk;
-      _loading = false;
-    });
+    setState(() { _allVerified = allOk; _loading = false; });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    if (_loading) return const _SplashScreen();
     if (!_allVerified) {
-      return FirstTimeVerificationScreen(onAllVerified: () {
-        setState(() => _allVerified = true);
-      });
+      return FirstTimeVerificationScreen(onAllVerified: () => setState(() => _allVerified = true));
     }
     return const HomeScreen();
   }
